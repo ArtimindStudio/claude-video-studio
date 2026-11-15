@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Seek Page Starter (1080x1920, 30 fps)</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #F2EFEC;
+    }
+    canvas {
+      display: block;
+      width: 1080px;
+      height: 1920px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="c" width="1080" height="1920"></canvas>
+  <script>
+    /**
+     * Deterministic 1080x1920 seek page starter for render_html.mjs.
+     *
+     * Frame contract:
+     *   - window.renderFrame(f): draws frame `f` (1..N, where t = (f - 1) / FPS) from scratch.
+     *   - window.seek(t): convenience alias that seeks to time `t` in seconds.
+     *   - window.ready = true: set after fonts and images finish loading.
+     *
+     * Render preview stills:
+     *   node .agent/skills/video-studio/scripts/render_html.mjs \
+     *     --html 04_kit/06_build/seek-page-starter.html \
+     *     --seconds 3 --width 1080 --height 1920 --fps 30 \
+     *     --output previews/starter.mp4 --preview
+     */
+    const W = 1080;
+    const H = 1920;
+    const FPS = 30;
+    const c = document.getElementById('c');
+    const g = c.getContext('2d');
+
+    // Seeded PRNG (mulberry32) so particles or jitter render identically every run
+    function mulberry32(seed) {
+      let a = seed >>> 0;
+      return function () {
+        a |= 0;
+        a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    const clamp = (x) => Math.min(Math.max(x, 0), 1);
+    const outCubic = (x) => 1 - Math.pow(1 - clamp(x), 3);
+    const inCubic = (x) => Math.pow(clamp(x), 3);
+    const prog = (frame, from, dur, ease = outCubic) =>
+      dur > 0 ? ease(clamp((frame - from) / dur)) : 0;
+
+    function drawStageCard(opts) {
+      const { enterP, exitP, eyebrow, title, subtitle, valueText, progressRatio } = opts;
+      const alpha = enterP * (1 - exitP);
+      if (alpha <= 0.001) return;
+
+      const blurPx = (1 - enterP) * 14 + exitP * 16;
+      const offsetY = (1 - enterP) * 28 - exitP * 18;
+      const scale = (0.96 + 0.04 * enterP) * (1 - 0.03 * exitP);
+
+      g.save();
+      g.globalAlpha = alpha;
+      g.filter = `blur(${blurPx.toFixed(2)}px)`;
+      g.translate(W / 2, H / 2 - 20 + offsetY);
+      g.scale(scale, scale);
+
+      // Card surface (880 x 580)
+      g.fillStyle = '#FFFFFF';
+      g.strokeStyle = '#D1CFC5';
+      g.lineWidth = 2;
+      g.beginPath();
+      g.roundRect(-440, -290, 880, 580, 36);
+      g.fill();
+      g.stroke();
+
+      // Eyebrow + violet status dot
+      g.fillStyle = '#7C3AED';
+      g.beginPath();
+      g.arc(-360, -195, 14, 0, Math.PI * 2);
+      g.fill();
+
+      g.fillStyle = '#87867F';
+      g.font = '600 22px monospace';
+      g.textAlign = 'left';
+      g.fillText(eyebrow, -330, -187);
+
+      // Main serif italic title
+      g.fillStyle = '#141413';
+      g.font = 'italic 72px Georgia, serif';
+      g.fillText(title, -370, -55);
+
+      // Frameless sub-text
+      g.fillStyle = '#5E546F';
+      g.font = '500 36px Helvetica, Arial, sans-serif';
+      g.fillText(subtitle, -370, 20);
+
+      // Alive metric bar + counter
+      g.fillStyle = '#F0EEE6';
+      g.beginPath();
+      g.roundRect(-370, 95, 740, 44, 22);
+      g.fill();
+
+      g.fillStyle = '#7C3AED';
+      g.beginPath();
+      g.roundRect(-370, 95, Math.max(44, 740 * progressRatio), 44, 22);
+      g.fill();
+
+      g.fillStyle = '#141413';
+      g.font = 'italic 700 54px Georgia, serif';
+      g.fillText(valueText, -370, 225);
+
+      g.restore();
+    }
+
+    window.renderFrame = (f) => {
+      const frame = Math.max(1, Math.round(f));
+      const t = (frame - 1) / FPS;
+
+      // Clear full-bleed 1080x1920 paper canvas
+      g.filter = 'none';
+      g.fillStyle = '#F2EFEC';
+      g.fillRect(0, 0, W, H);
+
+      // Continuous slow push-in drift (3.5% across 3 seconds / 90 frames)
+      const driftScale = 1 + 0.035 * clamp(t / 3.0);
+      g.save();
+      g.translate(W / 2, H / 2);
+      g.scale(driftScale, driftScale);
+      g.translate(-W / 2, -H / 2);
+
+      // Top chapter strip (optical zone y = 260)
+      g.fillStyle = '#141413';
+      g.beginPath();
+      g.roundRect(W / 2 - 170, 230, 340, 52, 26);
+      g.fill();
+      g.fillStyle = '#FAF9F5';
+      g.font = '600 20px monospace';
+      g.textAlign = 'center';
+      g.fillText(`FRAME ${String(frame).padStart(3, '0')} · ${t.toFixed(2)}S`, W / 2, 263);
+
+      // Word-by-word headline (optical zone y = 410)
+      const headline = ['Prove', 'the', 'look,', 'then', 'build.'];
+      let hx = 145;
+      g.textAlign = 'left';
+      g.font = 'italic 700 68px Georgia, serif';
+      for (let i = 0; i < headline.length; i++) {
+        const wp = prog(frame, 1 + i * 3, 10, outCubic);
+        g.save();
+        g.globalAlpha = wp;
+        g.filter = `blur(${((1 - wp) * 10).toFixed(1)}px)`;
+        g.fillStyle = i >= 3 ? '#7C3AED' : '#141413';
+        g.fillText(headline[i], hx, 410 + (1 - wp) * 18);
+        hx += g.measureText(headline[i] + ' ').width;
+        g.restore();
+      }
+
+      // BlurSwap between State 1 (frames 1..48) and State 2 (frames 36..90)
+      const s1In = prog(frame, 1, 12, outCubic);
+      const s1Out = prog(frame, 40, 8, inCubic);
+      const s1Count = Math.round(3 * prog(frame, 1, 24, outCubic));
+      drawStageCard({
+        enterP: s1In,
+        exitP: s1Out,
+        eyebrow: 'PASS 01 · STYLE FRAMES',
+        title: 'Three frames first',
+        subtitle: 'Opening, signature shot and one swap',
+        valueText: `${s1Count} of 3 style frames verified`,
+        progressRatio: prog(frame, 1, 30, outCubic),
+      });
+
+      const s2In = prog(frame, 36, 12, outCubic);
+      const s2Count = Math.round(100 * prog(frame, 38, 30, outCubic));
+      drawStageCard({
+        enterP: s2In,
+        exitP: 0,
+        eyebrow: 'PASS 02 · DETERMINISTIC SEEK',
+        title: 'Pure function of time',
+        subtitle: 'Overlapped 12f in / 8f out BlurSwap',
+        valueText: `${s2Count}% frame-exact reproducibility`,
+        progressRatio: prog(frame, 38, 34, outCubic),
+      });
+
+      // Lower safe-zone word-synced caption (y = 1490, well above bottom 15% UI zone)
+      const captionWords = [
+        { w: 'Every', start: 0.05 },
+        { w: 'frame', start: 0.35 },
+        { w: 'draws', start: 0.70 },
+        { w: 'from', start: 1.15 },
+        { w: 'time', start: 1.45, hot: true },
+        { w: 'alone.', start: 1.85, hot: true },
+      ];
+      let totalCapW = 0;
+      const capWidths = captionWords.map((cw) => {
+        g.font = cw.hot ? 'italic 700 48px Georgia, serif' : '500 44px Georgia, serif';
+        const w = g.measureText(cw.w).width + 14;
+        totalCapW += w;
+        return w;
+      });
+      let cx = (W - totalCapW + 14) / 2;
+      for (let i = 0; i < captionWords.length; i++) {
+        const cw = captionWords[i];
+        const said = clamp((t - cw.start) / 0.12);
+        g.save();
+        g.globalAlpha = 0.3 + 0.7 * said;
+        g.fillStyle = cw.hot ? '#7C3AED' : '#141413';
+        g.font = cw.hot ? 'italic 700 48px Georgia, serif' : '500 44px Georgia, serif';
+        g.fillText(cw.w, cx, 1490 + (1 - said) * 4);
+        cx += capWidths[i];
+        g.restore();
+      }
+
+      g.restore();
+    };
+
+    window.seek = (tSeconds) => window.renderFrame(Math.round(tSeconds * FPS) + 1);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        window.renderFrame(1);
+        window.ready = true;
+      });
+    } else {
+      window.renderFrame(1);
+      window.ready = true;
+    }
+  </script>
+</body>
+</html>

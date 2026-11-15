@@ -1,0 +1,76 @@
+{
+  "fps": 30,
+  "duration": 12.6,
+  "words": [
+    {"w": "One", "t0": 0.12, "t1": 0.32},
+    {"w": "timeline", "t0": 0.34, "t1": 0.78},
+    {"w": "drives", "t0": 0.80, "t1": 1.12},
+    {"w": "picture", "t0": 1.14, "t1": 1.54},
+    {"w": "and", "t0": 1.56, "t1": 1.72},
+    {"w": "sound.", "t0": 1.74, "t1": 2.18},
+    {"w": "Old", "t0": 4.30, "t1": 4.56},
+    {"w": "cards", "t0": 4.58, "t1": 4.96},
+    {"w": "blur", "t0": 4.98, "t1": 5.30},
+    {"w": "out", "t0": 5.32, "t1": 5.58},
+    {"w": "while", "t0": 5.60, "t1": 5.88},
+    {"w": "new", "t0": 5.90, "t1": 6.16},
+    {"w": "ones", "t0": 6.18, "t1": 6.48},
+    {"w": "rise", "t0": 6.50, "t1": 6.84},
+    {"w": "in.", "t0": 6.86, "t1": 7.16},
+    {"w": "Every", "t0": 8.70, "t1": 9.02},
+    {"w": "hit", "t0": 9.04, "t1": 9.30},
+    {"w": "lands", "t0": 9.32, "t1": 9.68},
+    {"w": "on", "t0": 9.70, "t1": 9.88},
+    {"w": "the", "t0": 9.90, "t1": 10.06},
+    {"w": "cut.", "t0": 10.08, "t1": 10.50}
+  ],
+  "beats": [
+    {
+      "id": "hook",
+      "start": 0.0,
+      "end": 4.2,
+      "t0": 0.0,
+      "t1": 4.2,
+      "spoken_duration": 2.06,
+      "claim": "One timeline drives picture and sound without manual re-timing.",
+      "visual": "Timeline JSON card feeds both the picture lane and the sound lane at optical centre.",
+      "proof": "finished reel plays in a phone frame while waveform cues lock to frame ticks",
+      "caption": "One timeline drives picture and sound."
+    },
+    {
+      "id": "blur_swap",
+      "start": 4.2,
+      "end": 8.6,
+      "t0": 4.2,
+      "t1": 8.6,
+      "spoken_duration": 2.86,
+      "claim": "States inside a topic overlap with an 8-frame blur out and 12-frame blur in.",
+      "visual": "Old card blurs upward over 8 frames while the new card rises sharp into the same 800x520 footprint.",
+      "proof": "both cards share the frame during the 12-frame swap window with zero empty frames",
+      "caption": "Old cards blur out while new ones rise in."
+    },
+    {
+      "id": "sound_lock",
+      "start": 8.6,
+      "end": 12.6,
+      "t0": 8.6,
+      "t1": 12.6,
+      "spoken_duration": 1.80,
+      "claim": "Every sound effect sits on a frame computed from the same timeline.",
+      "visual": "Three violet cue markers pop in at 4-frame stagger and turn green on the earshot sound sheet.",
+      "proof": "cue markers align within 1 frame (33 ms) of the waveform transients at -14 LUFS",
+      "caption": "Every hit lands on the cut."
+    }
+  ],
+  "cues": [
+    {"t": 0.05, "role": "land.light"},
+    {"t": 1.40, "role": "whoosh.short"},
+    {"t": 1.55, "role": "pop"},
+    {"t": 4.20, "role": "whoosh.short"},
+    {"t": 4.35, "role": "pop"},
+    {"t": 8.70, "role": "tick"},
+    {"t": 8.85, "role": "tick"},
+    {"t": 9.00, "role": "tick"},
+    {"t": 10.08, "role": "bell", "pitch": "E5"}
+  ]
+}

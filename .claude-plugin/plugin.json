@@ -1,0 +1,23 @@
+{
+  "name": "claude-video-studio",
+  "description": "Direct and build high-quality videos in code across 15+ visual styles (Three.js low-poly, 8-bit pixel art, flat vector SVG, Canvas 2D whiteboard/ukiyo-e/stickman/doodle/keynote/watercolour/clay, and Remotion editorial) with deterministic rendering and earshot sound QA.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Artimind Studio",
+    "url": "https://aiartimind.com"
+  },
+  "homepage": "https://aiartimind.com/claude-video-guide/",
+  "repository": "https://github.com/ArtimindStudio/claude-video-studio",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "video",
+    "animation",
+    "threejs",
+    "remotion",
+    "pixel-art",
+    "low-poly",
+    "motion-graphics",
+    "earshot"
+  ]
+}

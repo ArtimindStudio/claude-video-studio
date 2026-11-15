@@ -1,0 +1,15 @@
+{
+  "name": "artimind-video-studio",
+  "owner": {
+    "name": "Artimind Studio",
+    "url": "https://aiartimind.com"
+  },
+  "plugins": [
+    {
+      "name": "claude-video-studio",
+      "source": "./",
+      "description": "Code-driven video studio for Claude Code: 7 pre-trained skills, 17 style slash commands (/lowpoly-video, /pixel-video, /flat-video, /whiteboard-video, etc.), bundled Three.js + SVG + Canvas 2D engines, MotionKit, and earshot sound QA.",
+      "version": "1.0.0"
+    }
+  ]
+}
