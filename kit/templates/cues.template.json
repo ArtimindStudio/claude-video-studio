@@ -1,9 +1,0 @@
-[
-  {"t": 0.05, "role": "land.light"},
-  {"t": 1.40, "role": "whoosh.short"},
-  {"t": 1.55, "role": "pop"},
-  {"t": 2.40, "role": "tick"},
-  {"t": 2.55, "role": "tick"},
-  {"t": 2.70, "role": "tick"},
-  {"t": 3.30, "role": "click.confirm"}
-]

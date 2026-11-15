@@ -1,35 +1,22 @@
-Param(
-  [switch]$Project,
-  [string]$TargetDir = ""
-)
-
+# Claude Video Studio (Starter Lite) — Windows PowerShell Installer
 $ErrorActionPreference = "Stop"
-$RepoDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-if ($Project) {
-  $Root = if ($TargetDir) { (Resolve-Path $TargetDir).Path } else { (Get-Location).Path }
-} else {
-  $Root = $HOME
+$RepoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+function Install-StarterLite($DestSkills, $DestCommands) {
+  New-Item -ItemType Directory -Force -Path $DestSkills | Out-Null
+  $VsDest = Join-Path $DestSkills "video-studio"
+  if (Test-Path $VsDest) { Remove-Item -Recurse -Force $VsDest }
+  Copy-Item -Recurse -Force (Join-Path $RepoRoot "skills\video-studio") $VsDest
+  Copy-Item -Recurse -Force (Join-Path $RepoRoot "kit") (Join-Path $VsDest "kit")
+
+  if ($DestCommands) {
+    New-Item -ItemType Directory -Force -Path $DestCommands | Out-Null
+    Copy-Item -Force (Join-Path $RepoRoot "commands\*.md") $DestCommands
+  }
 }
 
-$SkillsDst = Join-Path $Root ".claude\skills"
-$CmdsDst   = Join-Path $Root ".claude\commands"
-New-Item -ItemType Directory -Force -Path $SkillsDst, $CmdsDst | Out-Null
-
-Get-ChildItem -Path (Join-Path $RepoDir "skills") -Directory | ForEach-Object {
-  $dest = Join-Path $SkillsDst $_.Name
-  if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
-  Copy-Item -Recurse -Force $_.FullName $dest
-}
-
-$LowpolyKit = Join-Path $SkillsDst "lowpoly-video\kit"
-$PixelKit   = Join-Path $SkillsDst "pixel-video\kit"
-New-Item -ItemType Directory -Force -Path $LowpolyKit, $PixelKit | Out-Null
-Copy-Item -Recurse -Force (Join-Path $RepoDir "kit\*") $LowpolyKit
-Copy-Item -Recurse -Force (Join-Path $RepoDir "kit\fonts") (Join-Path $PixelKit "fonts")
-Copy-Item -Recurse -Force (Join-Path $RepoDir "kit\vendor") (Join-Path $PixelKit "vendor")
-
-Copy-Item -Force (Join-Path $RepoDir "commands\*.md") $CmdsDst
-
-Write-Host "Installed Claude Video Studio into $Root\.claude\"
-Write-Host "  Skills:   video-studio, lowpoly-video, pixel-video, flat-video, animation-studio, real-sound, earshot"
-Write-Host "  Commands: /video-studio, /lowpoly-video, /pixel-video, /flat-video, /whiteboard-video, /ukiyoe-video, /stickman-video, /doodle-video, /keynote-video, /watercolor-video, /clay-video, /chalkboard-video, /dankoe-video, /glowsketch-video, /comicart-video, /editorial-short, /sound-check"
+Write-Host "==> Installing Claude Video Studio (Starter Lite) into $HOME"
+Install-StarterLite "$HOME\.claude\skills" "$HOME\.claude\commands"
+Install-StarterLite "$HOME\.gemini\antigravity\skills" $null
+Install-StarterLite "$HOME\.codex\skills" $null
+Write-Host "Installed Starter Lite (/video-studio, /whiteboard-video). Full 17-command Pro Edition: https://aiartimind.com/claude-video-guide/"

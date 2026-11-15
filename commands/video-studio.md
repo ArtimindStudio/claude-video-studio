@@ -1,12 +1,14 @@
 ---
-description: Direct and build a high-quality video in code (choose from 10+ proven styles, prove the look on 3 stills, build deterministic motion, place and verify sound with earshot, render MP4).
-argument-hint: <topic, script, or style + idea>
+description: Check your Claude Video Studio setup or start a deterministic code-rendered video from a topic or script.
+argument-hint: <topic, brief, or "doctor">
 ---
 
-Read and follow `~/.claude/skills/video-studio/SKILL.md` (or `.claude/skills/video-studio/SKILL.md`).
+Run the **Claude Video Studio** workflow for:
 
-User request: `$ARGUMENTS`
+$ARGUMENTS
 
-1. If the user named a style, lock it in `project.json` and read its style spec in `references/style-library.md` and `references/cards/`. If not, recommend the best-fitting style from `references/STYLE_CHOOSER.md`.
-2. Write `TREATMENT.md`, `timeline.json`, and `cues.json`.
-3. Render 3 style-frame previews first (`--preview`), inspect every PNG visually, then render the full MP4, mix audio (`sfx_from_cues.py` + music bed), and run `sound_check.sh`.
+Steps:
+1. Read `~/.claude/skills/video-studio/SKILL.md` and `~/.claude/skills/video-studio/references/MOTION_RULES_POSTER.md`.
+2. If the argument is `doctor` or `check`, run `sh ~/.claude/skills/video-studio/scripts/doctor.sh` and report the status of every tool.
+3. In **Starter Lite**, build deterministic `window.__seek(f)` HTML/Canvas scenes using `~/.claude/skills/video-studio/kit/templates/seek-page-starter.html` or the `/whiteboard-video` grammar (`~/.claude/skills/video-studio/kit/scene_v2/whiteboard.html`), then render via `node ~/.claude/skills/video-studio/scripts/render_html.mjs`.
+4. If the **Complete Studio Edition (Pro)** is installed (`~/.claude/skills/lowpoly-video/kit`), you also have access to all 17 slash commands (`/lowpoly-video`, `/pixel-video`, `/flat-video`, `/ukiyoe-video`, `/stickman-video`, `/doodle-video`, `/keynote-video`, `/watercolor-video`, `/clay-video`, `/chalkboard-video`, `/dankoe-video`, `/glowsketch-video`, `/comicart-video`, `/editorial-short`, `/sound-check`), the 10 style cards, MotionKit, and `sfx_from_cues.py`.

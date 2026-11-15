@@ -1,74 +1,61 @@
-# claude-video-studio — one install for code-driven video in Claude Code
+# Claude Video Studio — Starter Lite (Open-Core Edition)
 
-Turn a script or idea into a finished 9:16 or 16:9 MP4 written entirely in code. Every frame is a deterministic pure function of time (`window.renderFrame(f)`), captured headlessly with Playwright + Chromium, scored with real or synthesized sound cues, and checked with `earshot` and `ffprobe`.
+Make short `9:16` and `16:9` code-rendered videos in **Claude Code**, **Google Antigravity**, and **OpenAI Codex** where every frame is a deterministic function of time (`window.__seek(f)`), captured at 30 fps via headless Chromium and encoded with `ffmpeg`.
 
-![One 3-second Night Writer scene rendered across 10 code engines](examples/contact-sheet/contact_sheet.jpg)
+This repository is the **free Starter Lite edition** paired with the free 6-page excerpt of **[Make High-Quality Video With Claude](https://aiartimind.com/claude-video-guide/)**.
 
-## One-command install
+<p align="center">
+  <img src="examples/01_whiteboard.webp" width="260" alt="Style 01: Whiteboard sketch animated loop (included in Starter Lite)">
+</p>
 
-Run this once in your terminal to install all 7 skills, the shared Three.js + SVG + Canvas 2D engine kit, fonts, MotionKit, and 17 slash commands into `~/.claude/`:
+---
+
+## 1-Command Install (macOS / Linux / Git Bash)
 
 ```bash
 git clone https://github.com/ArtimindStudio/claude-video-studio.git ~/.claude/claude-video-studio && sh ~/.claude/claude-video-studio/install.sh
 ```
 
-On Windows PowerShell:
-
+**Windows PowerShell:**
 ```powershell
 git clone https://github.com/ArtimindStudio/claude-video-studio.git "$HOME\.claude\claude-video-studio"; powershell -ExecutionPolicy Bypass -File "$HOME\.claude\claude-video-studio\install.ps1"
 ```
 
-To install into a single project workspace (`.claude/` and `.agent/` for Antigravity) instead of your home folder:
+---
 
-```bash
-sh ~/.claude/claude-video-studio/install.sh --project .
-```
+## 10-Minute Quickstart (Build Your First Video Today)
 
-## Included slash commands
+1. **Check your local tools (`node`, `ffmpeg`, `playwright`):**
+   ```bash
+   sh ~/.claude/skills/video-studio/scripts/doctor.sh
+   ```
+2. **Render the included 90-frame Whiteboard reference scene (`1080x1920 @ 30fps`):**
+   ```bash
+   node ~/.claude/skills/video-studio/scripts/render_html.mjs \
+     ~/.claude/skills/video-studio/kit/scene_v2/whiteboard.html \
+     --frames 90 --fps 30 --out whiteboard_demo.mp4
+   ```
+3. **Direct a new Whiteboard explainer in Claude Code:**
+   ```text
+   /whiteboard-video Build a 15-second 1080x1920 explainer showing why code-rendered video beats diffusion on sharp typography, with progressive black marker draw-on and a #7C3AED violet callout circle.
+   ```
 
-Once installed, type any of these commands directly in Claude Code:
+---
 
-| Command | Style & Engine | Visual grammar |
-|:---|:---|:---|
-| `/video-studio <topic>` | Orchestrator (any style) | Full 9-step pipeline: treatment, timeline, 3 style-frame previews, motion build, SFX from cues, earshot QA, MP4 |
-| `/lowpoly-video <topic>` | Three.js orthographic GPU (`kit/engines/lowpoly`) | Faceted low-poly 3D dioramas, key/fill/rim light, GTAO, bloom, rising titles, spring chips |
-| `/pixel-video <topic>` | Three.js + 8-bit shader (`kit/engines/pixel`) | Nearest-neighbour pixel grid, 4x4 Bayer ordered dither, palette snap, bitmap captions, chiptune synth |
-| `/flat-video <topic>` | Pure SVG stage (`kit/engines/flat`) | Two-tone flat shapes, radial glows, riggable characters, multi-plane parallax camera |
-| `/whiteboard-video <topic>` | Canvas 2D / SVG (`kit/scene_v2`) | Black marker linework on warm off-white, one `#7C3AED` accent annotation, stroke-order draw-on |
-| `/ukiyoe-video <topic>` | Canvas 2D (`kit/scene_v2`) | Indigo bokashi sky, carved ink outlines, figure stepped on threes (10 fps), smooth camera, paper grain |
-| `/stickman-video <topic>` | Canvas 2D (`kit/scene_v2`) | White circle head, dot eyes, black stick limbs, cartoon gloves inside a cel-shaded 2D world |
-| `/doodle-video <topic>` | Canvas 2D (`kit/scene_v2`) | 8 fps boiling ink outlines, flat bright fills, sticker callouts, storytime captions |
-| `/keynote-video <topic>` | Canvas 2D / Remotion (`kit/scene_v2`) | Dark `#09070F` hairline grid, `#8B5CF6` accent, glass metric cards, live telemetry |
-| `/watercolor-video <topic>` | Canvas 2D (`kit/scene_v2`) | Soft translucent washes, warm lamp screen glow, drifting bokeh, multiply paper texture |
-| `/clay-video <topic>` | Canvas 2D (`kit/scene_v2`) | Rounded pastel forms, radial key-light shading, specular highlights, soft contact shadows |
-| `/chalkboard-video <topic>` | Canvas 2D / SVG (`cards/chalkboard.md`) | Layered chalk strokes on `#1B2620` slate, hatching, yellow `#FACC15` callouts, eraser wipes |
-| `/dankoe-video <topic>` | SVG / Canvas (`cards/minimal-line-art.md`) | White vector paths and node constellations on `#0A0A0C`, progressive stroke draw-on |
-| `/glowsketch-video <topic>` | Canvas 2D (`cards/glow-sketch.md`) | Luminous dotted contours on near-black, slow path tracing, restrained pulses |
-| `/comicart-video <topic>` | Canvas 2D (`cards/comic-art.md`) | Bold black ink, Ben-Day halftone dots, dynamic panels, impact holds |
-| `/editorial-short <topic>` | HTML / Remotion (`kit/motion`) | Warm paper `#F2EFEC`, electric violet `#7C3AED`, Playfair Display italic, blur-swaps, spoken captions |
-| `/sound-check <film.mp4>` | Earshot + Real-Sound (`scripts/sound_check.sh`) | Places SFX from `cues.json` and writes `qa/sound/sheet.png`, `timeline.json`, `critique.json`, `measure.json` |
+## Starter Lite (Free) vs. Complete Studio Edition ($29)
 
-## Included micro-skills (`skills/`)
+The same 3-second Night Writer script rendered across all 10 code-video engines in the Complete Studio Edition:
 
-- **`video-studio`**: Core director skill with 10 style cards (`references/cards/*.md`), `STYLE_CHOOSER.md`, `style-library.md`, `doctor.sh`, `render_html.mjs`, `reading_time.py`, `sfx_from_cues.py`, and `sound_check.sh`.
-- **`lowpoly-video`**: Three.js orthographic diorama engine (`engine.js`, `post.js`, `render_gpu.mjs`, `mix.sh`, `qa.sh`, `loop_check.sh`, `references/loop.md`).
-- **`pixel-video`**: Three.js 8-bit pixel shader engine (`engine.js`, `pixelpost.js`, `chiptune.py`, `mix.sh`).
-- **`flat-video`**: Pure SVG flat-vector engine (`engine.js`, `scenes.js`) with two-tone shading, character rigs, and multi-plane camera.
-- **`animation-studio`**: 10 style modules (`pixelart`, `chalkboard`, `glowsketch`, `ps2`, `comicart`, `flatvector`, `dankoe`, `cgimotion`, `legostyle`, `zackdfilms`) with quality rubrics and input contracts.
-- **`real-sound`**: Full multi-stem audio supervision pipeline (`analyze.py`, `arrange.py`, `audit.py`, `mix.py`, `qa.py`, `master.py`, `credits.py`, `mux.mjs`).
-- **`earshot`**: Local audio listening and SFX forge workflow (pair with [Leonxlnx/earshot](https://github.com/Leonxlnx/earshot)).
+![10 Claude Video Styles Contact Sheet](examples/contact_sheet.jpg)
 
-## System requirements
+| Capability | Starter Lite (This Repo · Free) | Complete Studio Edition ([$29 Guide & Pro Kit](https://aiartimind.com/claude-video-guide/)) |
+|---|---|---|
+| **Director's Guide PDF & Web Edition** | Free 6-Page Starter Excerpt ([Download PDF](https://aiartimind.com/claude-video-guide/#sampler)) | **Full 45-Page Guide** across 15 chapters (`GUIDE_v1.pdf` + `GUIDE_v1.html`) |
+| **Environment & Frame Renderer** | `doctor.sh` + `render_html.mjs` + `seek-page-starter.html` | Full 4-pass build kit + `reading_time.py` + `sound_check.sh` |
+| **Pre-Trained Slash Commands** | **2 commands:** `/video-studio`, `/whiteboard-video` | **All 17 commands:** `/lowpoly-video`, `/pixel-video`, `/flat-video`, `/whiteboard-video`, `/ukiyoe-video`, `/stickman-video`, `/doodle-video`, `/keynote-video`, `/watercolor-video`, `/clay-video`, `/chalkboard-video`, `/dankoe-video`, `/glowsketch-video`, `/comicart-video`, `/editorial-short`, `/video-studio`, `/sound-check` |
+| **Code Video Engines & Style Cards** | **1 style:** `01 Whiteboard sketch` (`whiteboard.html`) | **All 10 Style Cards** + **3 dedicated GPU/2D engines** (`lowpoly` Three.js WebGL + GTAO/Bloom/DOF `post.js`, `pixel` 180x320 Bayer dither, `flat` 2D vector) + all 10 `scene_v2/*.html` files |
+| **Motion Rules & Code Library** | `MOTION_RULES_POSTER.md` (13 rules reference) | **The MotionKit** — 11 drop-in functions (`BlurSwap`, `drift`, `stagger`, `CountUp`, `SpokenCaption`, etc.) in plain JS (`motion-kit.js`) and React/Remotion (`MotionKit.tsx`) |
+| **Frame-Exact Sound & Audio Mix** | Manual `ffmpeg` muxing | **`sfx_from_cues.py` (252 code SFX)** + `chiptune.py` + `-14 LUFS` sidechain ducking & `earshot` QA |
+| **Copy-Paste Film Recipes** | 1 starter explainer prompt | **6 complete film recipes** with beat sheets, timings, cue specs & prompts |
 
-- **Node.js 20+** and **Playwright** (`npm i -D playwright && npx playwright install chromium` in your working project)
-- **FFmpeg 7+** (`ffmpeg` and `ffprobe` on `PATH`)
-- **Python 3.11+**
-- **Optional:** [`earshot`](https://github.com/Leonxlnx/earshot) for audio listening QA and the procedural SFX bank (`sh ~/.claude/skills/video-studio/scripts/doctor.sh` prints the exact one-time setup command).
-
-## Companion guide
-
-Full handbook, treatment templates, and style breakdowns: **[Make High-Quality Video with Claude](https://aiartimind.com/claude-video-guide/)**.
-
-## License
-
-MIT — see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md). Made by [Artimind Studio](https://aiartimind.com).
+👉 **[Get the Complete 45-Page Guide & Pro Starter Kit ($29) →](https://aiartimind.com/claude-video-guide/)**
